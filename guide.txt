@@ -1,0 +1,71 @@
+1. Clone Your Forked Repo Locally
+Since you've forked the repo, work on your fork (e.g., https://github.com/YOUR_USERNAME/TrendRadar).
+
+Open a terminal and clone it:
+This gives you a local copy to edit configs before pushing back.
+
+2. Configure for Tech News Filtering
+Edit config/frequency_words.txt to focus on tech-related news. This file uses keywords to filter what gets reported/pushed. Examples:
+
+Add lines like: AI, 科技, 编程, 机器学习, 区块链, ChatGPT, etc. (supports Chinese/English).
+Syntax: Plain words for must-match, +word for required, !word for excluded.
+Default has some examples; replace or add to them.
+After editing, commit and push:
+
+3. Set Up Telegram Bot for Hourly Notifications
+TrendRadar pushes to Telegram via a bot. You'll need:
+
+Bot Token: Create a bot via Telegram's @BotFather. Send /newbot, name it, get the token (e.g., 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11).
+Chat ID: Your personal chat ID (or a group/channel ID if preferred).
+Send a message to your bot.
+Visit https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates in a browser (replace <YOUR_BOT_TOKEN>).
+Look for "chat":{"id":123456789} – that's your Chat ID.
+In your forked repo on GitHub:
+
+Go to Settings > Secrets and variables > Actions > New repository secret.
+Add two secrets:
+Name: TELEGRAM_BOT_TOKEN | Value: Your bot token.
+Name: TELEGRAM_CHAT_ID | Value: Your chat ID.
+(Optional) Add other platforms if wanted, but Telegram is sufficient.
+The workflow already supports Telegram and runs every hour (cron: "0 * * * *"). It will send filternotification.enable_notification: true.
+(Optional) Enable push_window if you want notifications only during certain hours (e.g., 9 AM - 6 PM).
+For frequency: The default is every hour. If you want more/less, edit .github/workflows/craw is mostly Chinese; add English keywords if needed.
+Security: Secrets are encrypted; don't share tokens.
+This should get you running with tech news on Pages and Telegram pushes. If you run into errors during setup, share the logs or specific issues, and I can help debug! Let me know if you need code snippets or further customization.ler.yml (change cron: "0 * * * *" to "*/30 * * * *" for 30 mins, but avoid too frequent to prevent rate limits).
+Commit and push changes.
+
+4. Enable GitHub Pages for Web Display
+This deploys the HTML reports (e.g., daily tech news summaries) to a live site like https://YOUR_USERNAME.github.io/TrendRadar.
+
+In your forked repo: Go to Settings > Pages.
+Set Source to "Deploy from a branch".
+Branch: main | Folder: /(root).
+Save. GitHub will build and host the site (takes 1-2 minutes).
+Visit https://YOUR_USERNAME.github.io/TrendRadar to see the reports (updates after each workflow run).
+The workflow auto-commits HTML files back to your repo, triggering Pages updates.
+
+5. Adjust Push Mode and Frequency (If Needed)
+Edit config/config.yaml locally:
+Set report.mode to "current" (real-time rankings) or "daily" (end-of-day summary) – "current" is good for hourly tech updates.
+Ensure 
+
+6. Test the Setup
+In your repo: Go to Actions > Hot News Crawler > Run workflow (manual trigger).
+Wait 1-2 minutes. Check:
+Telegram: Should receive a push with filtered tech news.
+GitHub Pages: Refresh the site for updated HTML reports.
+Logs: In Actions, view the run for errors (e.g., if secrets are missing).
+If issues: Check the README's troubleshooting (e.g., ensure files exist, secrets are set).
+
+7. Monitor and Maintain
+Workflows run automatically every hour.
+View reports: The site shows aggregated tech trends with rankings, timestamps, and new indicators (🆕).
+Logs: Check Actions tab for runs.
+Updates: The repo updates frequently; sync your fork via GitHub's "Sync fork" or rebase locally.
+Costs: Free for basic use (GitHub Actions has limits; avoid excessive runs).
+Potential Issues & Tips
+No notifications? Verify secrets (case-sensitive), bot setup, and that keywords match news.
+Pages not updating? Ensure the workflow commits changes; check Pages build status.
+Rate limits: GitHub warns against <30-min runs; stick to hourly.
+AI features: Optional; set up MCP if you want natural language queries (e.g., "Show AI trends today").
+Localization: Newsed tech news matches.
